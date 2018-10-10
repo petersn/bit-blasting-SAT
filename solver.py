@@ -7,6 +7,7 @@ class Unsatisfiable(Exception):
 
 class Clause(object):
 	__slots__ = ["positive", "negative"]
+
 	def __init__(self, positive, negative):
 		self.positive = set(positive)
 		self.negative = set(negative)
