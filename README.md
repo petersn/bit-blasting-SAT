@@ -1,34 +1,11 @@
 # bit-blasting-SAT
 
-*Disclaimer:* This SAT solver is so hilariously non-competitive compared to real SAT solvers that it's only worth looking at if you're interested pedagogically.
-
 ## Introduction
 
 This repo contains some experiments of mine with [DPLL](https://en.wikipedia.org/wiki/DPLL_algorithm) and bit-blasting a theory of fixed-width integers into SAT instances.
 The file `solver.py` contains a simple DPLL implementation in Python2.
 
-If imported you can create a SAT instance via `solver.Clause(positive_variables, negative_variables)` which creates a disjunctive clause.
-For example:
-```
-import solver
-
-# Represents the clause (x ∨ y ∨ ¬z)
-clause1 = solver.Clause(["x", "y"], ["z"])
-
-# Represents the clause (¬x ∨ ¬y)
-clause2 = solver.Clause([], ["x", "y"])
-
-# Represents the problem (x ∨ y ∨ ¬z) ∧ (¬x ∨ ¬y)
-instance = solver.Instance([clause1, clause2])
-
-print "All satisfying assignments:"
-for assignment in solver.solve(instance):
-	print assignment
-```
-The above will print the only satisfying assignment, namely `{'x': False, 'y': False, 'z': False}`.
-
-The `solver.solve` function will iterate over all solutions in turn, and produces them dynamically one at a time, so it's safe to iterate over even if there are potentially exponentially many solutions.
-The assignments it returns might not include assignments for all variables if the instance is satisfied regardless of the assignment of the remaining variables.
+*Disclaimer:* This SAT solver is so hilariously non-competitive compared to real SAT solvers that it's only worth looking at if you're interested pedagogically.
 
 ## Bit Blasting for Cryptanalysis
 
@@ -61,7 +38,33 @@ This instance solved in about 15 minutes on my laptop, so my hope is that with a
 
 (It is also worth noting that Z3 breaks Toyfish near instantly, because it's a real SMT solver, and isn't nearly as dumb as the code in this repo.)
 
-### Random SAT
+## Usage
+
+If you import `solver.py` you can create a SAT instance via `solver.Clause(positive_variables, negative_variables)` which creates a disjunctive clause.
+For example:
+```
+import solver
+
+# Represents the clause (x ∨ y ∨ ¬z)
+clause1 = solver.Clause(["x", "y"], ["z"])
+
+# Represents the clause (¬x ∨ ¬y)
+clause2 = solver.Clause([], ["x", "y"])
+
+# Represents the problem (x ∨ y ∨ ¬z) ∧ (¬x ∨ ¬y)
+instance = solver.Instance([clause1, clause2])
+
+print "All satisfying assignments:"
+for assignment in solver.solve(instance):
+	print assignment
+```
+The above will print the only satisfying assignment, namely `{'x': False, 'y': False, 'z': False}`.
+
+The `solver.solve` function will iterate over all solutions in turn, and produces them dynamically one at a time, so it's safe to iterate over even if there are potentially exponentially many solutions.
+The assignments it returns might not include assignments for all variables if the instance is satisfied regardless of the assignment of the remaining variables.
+
+
+## Random SAT
 
 If you run `solver.py` it will do a test solve on a randomly generated 3SAT instance with 100 variables and 4.2 clauses per variable (which is approximately the right number of clauses to make a random 3SAT instance as hard as possible).
 
@@ -79,4 +82,9 @@ Solving up to first satisfying assignment...
 
 Completed in 0.255 seconds.
 ```
+
+## License
+
+This entire repo is released into the public domain, or CC0 for non-US based folks for whom "public domain" might not be a legally recognized term.
+You may do whatever you want whatsoever with any of the code.
 
