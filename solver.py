@@ -60,6 +60,13 @@ class Instance(object):
 			self.assignments.copy(),
 		)
 
+	def get_all_variables(self):
+		all_vars = set()
+		for clause in self.clauses:
+			all_vars |= clause.positive
+			all_vars |= clause.negative
+		return all_vars
+
 	def apply_subst(self, var, truth):
 		assert var not in self.assignments
 		self.assignments[var] = truth
@@ -97,10 +104,9 @@ class Instance(object):
 
 	def propagate(self):
 		while True:
-			made_progress = False
-			made_progress |= self.unit_propagate_once()
-			made_progress |= self.pure_literal_eliminate_once()
-			if not made_progress:
+			while self.unit_propagate_once():
+				pass
+			if not self.pure_literal_eliminate_once():
 				break
 
 	def verify_against(self, assignment):
@@ -188,7 +194,7 @@ def random_instance(var_count, clause_count, valid_clause_lengths):
 if __name__ == "__main__":
 	import time
 
-	var_count = 80
+	var_count = 100
 	clause_count = int(4.2 * var_count)
 	instance = random_instance(var_count, clause_count, [3])
 

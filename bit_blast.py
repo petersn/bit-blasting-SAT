@@ -67,7 +67,7 @@ class BitRotation(Integer):
 	def __init__(self, builder, x, rotation_amount):
 		self.bit_length = x.bit_length
 		rotation_amount %= self.bit_length
-		self.bits = x.bits[-rotation_amount:] + x.bits[:-rotation_amount]
+		self.bits = x.to_list()[-rotation_amount:] + x.to_list()[:-rotation_amount]
 		assert len(self.bits) == self.bit_length
 
 class Xor(Integer):
@@ -171,7 +171,10 @@ def integer_constant_constraint(builder, x, const):
 	assert isinstance(x, Integer)
 	for i in xrange(x.bit_length):
 		bit = (const >> i) & 1
-		builder.equate(x[i], builder.bools[bit])
+		if bit:
+			builder.add_clause([x[i]], [])
+		else:
+			builder.add_clause([], [x[i]])
 
 if False:
 	builder = Builder()
