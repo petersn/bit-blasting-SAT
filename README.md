@@ -38,7 +38,7 @@ The file `bit_blasting.py` implements an interface for bit blasting various arit
 We use this to do some very basic cryptanalysis on a toy "block cipher" based on the design of Threefish, which I'll be calling Toyfish here.
 Diagrammed below:
 
-![Toyfish](/docs/diagram1.png?raw=true | width=600)
+![Toyfish](/docs/diagram1.png?raw=true "Toyfish block cipher")
 
 Here each line carries 16 bits, yielding a 64-bit block cipher with a 64-bit key.
 One round of this cipher consists of applying a Threefish-style mix operation on the left two words and right two words, then permuting the words.

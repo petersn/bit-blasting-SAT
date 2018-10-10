@@ -5,7 +5,7 @@ diagram1.pdf: diagram1.tex
 	pdflatex $<
 
 diagram1.png: diagram1.pdf
-	convert -density 500 $< $@
+	convert -density 300 $< $@
 
 .PHONY: clean
 clean:
