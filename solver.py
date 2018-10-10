@@ -8,8 +8,8 @@ class Unsatisfiable(Exception):
 class Clause(object):
 	__slots__ = ["positive", "negative"]
 	def __init__(self, positive, negative):
-		self.positive = positive
-		self.negative = negative
+		self.positive = set(positive)
+		self.negative = set(negative)
 
 	def __repr__(self):
 		return "[%s:%s]" % (
@@ -18,7 +18,7 @@ class Clause(object):
 		)
 
 	def copy(self):
-		return Clause(self.positive.copy(), self.negative.copy())
+		return Clause(self.positive, self.negative)
 
 	def is_unit(self):
 		return len(self.positive) + len(self.negative) == 1
@@ -42,10 +42,11 @@ class Clause(object):
 				raise Unsatisfiable()
 			return var in self.negative
 
-class SolverState(object):
+class Instance(object):
 	__slots__ = ["clauses", "assignments"]
 
-	def __init__(self, clauses, assignments):
+	def __init__(self, clauses, assignments=None):
+		assignments = assignments or {}
 		self.clauses = clauses
 		self.assignments = assignments
 
@@ -53,7 +54,7 @@ class SolverState(object):
 		return " ".join(repr(clause) for clause in self.clauses)
 
 	def copy(self):
-		return SolverState(
+		return Instance(
 			[clause.copy() for clause in self.clauses],
 			self.assignments.copy(),
 		)
@@ -181,7 +182,7 @@ def random_instance(var_count, clause_count, valid_clause_lengths):
 		for _ in xrange(random.choice(valid_clause_lengths)):
 			random.choice((positive, negative)).add(random.randrange(var_count))
 		clauses.append(Clause(positive, negative))
-	return SolverState(clauses, {})
+	return Instance(clauses, {})
 
 if __name__ == "__main__":
 	import time
