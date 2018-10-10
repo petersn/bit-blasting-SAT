@@ -69,11 +69,11 @@ if __name__ == "__main__":
 	# Implement two rounds of mini-Threefish-128.
 	# This is a fictious "block cipher" based on Threefish designed to be a test problem.
 	add_key(bit_blast.Xor)
-	apply_mix(0, 17)
-	apply_mix(2, 20)
+	apply_mix(0, 7)
+	apply_mix(2, 11)
 	registers = [registers[1], registers[3], registers[0], registers[2]]
 	apply_mix(0, 9)
-	apply_mix(2, 30)
+	apply_mix(2, 14)
 	add_key(bit_blast.Addition)
 
 	# Fix the the ciphertext values.

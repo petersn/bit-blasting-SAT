@@ -1,4 +1,6 @@
-## bit-blasting-SAT
+# bit-blasting-SAT
+
+## Introduction
 
 This repo contains some experiments of mine with [DPLL](https://en.wikipedia.org/wiki/DPLL_algorithm) and bit-blasting a theory of fixed-width integers into SAT instances.
 The file `solver.py` contains a simple DPLL implementation in Python2.
@@ -26,11 +28,35 @@ The above will print the only satisfying assignment, namely `{'x': False, 'y': F
 The `solver.solve` function will iterate over all solutions in turn, and produces them dynamically one at a time, so it's safe to iterate over even if there are potentially exponentially many solutions.
 The assignments it returns might not include assignments for all variables if the instance is satisfied regardless of the assignment of the remaining variables.
 
-### Test
+## Bit Blasting for Cryptanalysis
 
-If you run `solver.py` it will do a test solving a randomly generated 3SAT instance with 80 variables and 4.2 clauses per variable (which is approximately the right number of clauses to make a random 3SAT instance as hard as possible).
+Bit blasting refers to decomposing arithmetic operations into SAT instances.
+The file `bit_blasting.py` implements an interface for bit blasting various arithmetic operations on fixed-width integers into SAT instances, suitable for passing into `solver.py`.
 
-An example invocation:
+We use this to do some very basic cryptanalysis on a toy "block cipher" based on the design of Threefish, which I'll be calling Toyfish here.
+Diagrammed below:
+
+![Toyfish](/docs/diagram1.png?raw=true "Toyfish block cipher")
+
+Here each line carries 16 bits, yielding a 64-bit block cipher with a 64-bit key.
+One round of this cipher consists of applying a Threefish-style mix operation on the left two words and right two words, then permuting the words.
+(The permutation after the last pass of mix operations is suppressed, because it clearly adds no security.)
+Finally, the block is whitened with the key by XOR at the beginning and by addition at the end of the cipher.
+The innards of this cipher obviously don't provide anything even remotely resembling enough diffusion at just two rounds, as depicted above.
+It's really a disgustingly terrible design, but it'll suffice as a test case for our SAT solver.
+
+Now, at two rounds, one can trivially break Toyfish, but we'll break it automatically using our SAT solver.
+We will perform a known-plaintext attack where we solve for every key that is consistent with our known plaintext/ciphertext pair.
+This is implemented in `toyfish_invert.py`.
+
+Specifically, `toyfish_invert.py` picks a random 64-bit key, generates a random plaintext/ciphertext pair under this key, then uses `bit_blast.py` to build a bit-blasted implementation of Toyfish as a SAT instance, and equates the inputs and outputs to the known plaintext/ciphertext pair.
+Then it runs `solver.py` on the SAT instance to enumerate every possible 64-bit key that is consistent with the known pair.
+
+### Random SAT
+
+If you run `solver.py` it will do a test solve on a randomly generated 3SAT instance with 100 variables and 4.2 clauses per variable (which is approximately the right number of clauses to make a random 3SAT instance as hard as possible).
+
+An example invocation with 80 variables:
 
 ```
 Performing a test solve on a random 3SAT instance with 80 variables and 336 clauses.
