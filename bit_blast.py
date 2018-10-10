@@ -63,6 +63,20 @@ class Integer:
 	def decode(self, total_assignment):
 		return sum(total_assignment[var] << i for i, var in enumerate(self.bits))
 
+class BitRotation(Integer):
+	def __init__(self, builder, x, rotation_amount):
+		self.bit_length = x.bit_length
+		rotation_amount %= self.bit_length
+		self.bits = x.bits[-rotation_amount:] + x.bits[:-rotation_amount]
+		assert len(self.bits) == self.bit_length
+
+class Xor(Integer):
+	def __init__(self, builder, x, y):
+		assert x.bit_length == y.bit_length
+		Integer.__init__(self, builder, x.bit_length)
+		for i in xrange(self.bit_length):
+			xor_gate(builder, x[i], y[i], self[i])
+
 class Addition(Integer):
 	def __init__(self, builder, x, y):
 		assert isinstance(x, Integer)
