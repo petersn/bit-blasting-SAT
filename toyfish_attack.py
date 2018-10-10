@@ -4,7 +4,7 @@ import random
 import solver
 import bit_blast
 
-bit_size = 13
+bit_size = 16
 modulus = 2**bit_size
 
 def mix(builder, x, y, rotation):

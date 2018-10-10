@@ -45,14 +45,21 @@ One round of this cipher consists of applying a Threefish-style mix operation on
 (The permutation after the last pass of mix operations is suppressed, because it clearly adds no security.)
 Finally, the block is whitened with the key by XOR at the beginning and by addition at the end of the cipher.
 The innards of this cipher obviously don't provide anything even remotely resembling enough diffusion at just two rounds, as depicted above.
-It's really a disgustingly terrible design, but it'll suffice as a test case for our SAT solver.
+It's really a disgustingly terrible design, and is probably utterly insecure even if the number of rounds (two) weren't a complete joke, but it'll suffice as a test case for our SAT solver.
 
 Now, at two rounds, one can trivially break Toyfish, but we'll break it automatically using our SAT solver.
 We will perform a known-plaintext attack where we solve for every key that is consistent with our known plaintext/ciphertext pair.
 This is implemented in `toyfish_invert.py`.
 
 Specifically, `toyfish_invert.py` picks a random 64-bit key, generates a random plaintext/ciphertext pair under this key, then uses `bit_blast.py` to build a bit-blasted implementation of Toyfish as a SAT instance, and equates the inputs and outputs to the known plaintext/ciphertext pair.
+The SAT instance contains 898 variables (mostly defining internal wires of full adders in the various bit-blasted additions) with 2818 clauses.
 Then it runs `solver.py` on the SAT instance to enumerate every possible 64-bit key that is consistent with the known pair.
+
+Unfortunately, currently `solver.py` is too slow to run the key-recovery attack on the full sized 64-bit version of Toyfish.
+The largest size I've managed to solve is a 56-bit version of Toyfish where each wirte is reduced to carrying a mere 14 bits, rather than the full 16.
+This instance solved in about 15 minutes on my laptop, so my hope is that with a little more work on `solver.py` and waiting overnight I should be able to break the full 64-bit version of Toyfish.
+
+(It is also worth noting that Z3 breaks Toyfish near instantly, because it's a real SMT solver, and isn't nearly as dumb as the code in this repo.)
 
 ### Random SAT
 
