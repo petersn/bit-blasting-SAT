@@ -4,7 +4,7 @@ import random
 import solver
 import bit_blast
 
-bit_size = 9
+bit_size = 13
 modulus = 2**bit_size
 
 def mix(builder, x, y, rotation):
@@ -31,15 +31,17 @@ def execute(regs, key):
 	regs[0], regs[1] = concrete_mix(regs[0], regs[1], 9)
 	regs[2], regs[3] = concrete_mix(regs[2], regs[3], 30)
 	for i in xrange(len(regs)):
-		regs[i] ^= key[i]
+		regs[i] += key[i]
+		regs[i] %= modulus
 	return regs
 
 def fmt(values):
-	return " ".join("%03x" % v for v in values)
+	return " ".join("%04x" % v for v in values)
 
 if __name__ == "__main__":
+	print "Bits:", bit_size
 	n = 4
-	random.seed(1234)
+	random.seed(12345)
 	builder = bit_blast.Builder()
 	plaintext_values = [random.getrandbits(bit_size) for _ in xrange(n)]
 	secret_key = [random.getrandbits(bit_size) for _ in xrange(len(plaintext_values))]
@@ -52,9 +54,9 @@ if __name__ == "__main__":
 	registers = [bit_blast.Integer(builder, bit_size) for _ in xrange(len(plaintext_values))]
 	key = [bit_blast.Integer(builder, bit_size) for _ in xrange(len(plaintext_values))]
 
-	def add_key():
+	def add_key(f):
 		for i in xrange(len(registers)):
-			registers[i] = bit_blast.Xor(builder, registers[i], key[i])
+			registers[i] = f(builder, registers[i], key[i])
 
 	def apply_mix(offset, r):
 		x, y = mix(builder, registers[offset], registers[offset + 1], r)
@@ -66,13 +68,13 @@ if __name__ == "__main__":
 
 	# Implement two rounds of mini-Threefish-128.
 	# This is a fictious "block cipher" based on Threefish designed to be a test problem.
-	add_key()
+	add_key(bit_blast.Xor)
 	apply_mix(0, 17)
 	apply_mix(2, 20)
 	registers = [registers[1], registers[3], registers[0], registers[2]]
 	apply_mix(0, 9)
 	apply_mix(2, 30)
-	add_key()
+	add_key(bit_blast.Addition)
 
 	# Fix the the ciphertext values.
 	for var, value in zip(registers, ciphertext_values):
@@ -98,10 +100,6 @@ if __name__ == "__main__":
 			if key_values == secret_key:
 				print "Correct key found!"
 				exit()
-#			break
-#		if key_values != None:
-#			break
 	if key_values == None:
 		print "No solution exists; impossible plaintext + ciphertext pair."
-		exit()
 
