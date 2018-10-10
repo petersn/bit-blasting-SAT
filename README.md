@@ -33,7 +33,7 @@ The SAT instance contains 898 variables (mostly defining internal wires of full 
 Then it runs `solver.py` on the SAT instance to enumerate every possible 64-bit key that is consistent with the known pair.
 
 Unfortunately, currently `solver.py` is too slow to run the key-recovery attack on the full sized 64-bit version of Toyfish.
-The largest size I've managed to solve is a 56-bit version of Toyfish where each wirte is reduced to carrying a mere 14 bits, rather than the full 16.
+The largest size I've managed to solve is a 56-bit version of Toyfish where each wire is reduced to carrying a mere 14 bits, rather than the full 16.
 This instance solved in about 15 minutes on my laptop, so my hope is that with a little more work on `solver.py` and waiting overnight I should be able to break the full 64-bit version of Toyfish.
 
 (It is also worth noting that Z3 breaks Toyfish near instantly, because it's a real SMT solver, and isn't nearly as dumb as the code in this repo.)
