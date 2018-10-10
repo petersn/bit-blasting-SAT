@@ -4,7 +4,7 @@ import random
 import solver
 import bit_blast
 
-bit_size = 16
+bit_size = 10
 modulus = 2**bit_size
 
 def mix(builder, x, y, rotation):
@@ -25,11 +25,11 @@ def execute(regs, key):
 	key = list(key)
 	for i in xrange(len(regs)):
 		regs[i] ^= key[i]
-	regs[0], regs[1] = concrete_mix(regs[0], regs[1], 17)
-	regs[2], regs[3] = concrete_mix(regs[2], regs[3], 20)
+	regs[0], regs[1] = concrete_mix(regs[0], regs[1], 7)
+	regs[2], regs[3] = concrete_mix(regs[2], regs[3], 11)
 	regs = [regs[1], regs[3], regs[0], regs[2]]
 	regs[0], regs[1] = concrete_mix(regs[0], regs[1], 9)
-	regs[2], regs[3] = concrete_mix(regs[2], regs[3], 30)
+	regs[2], regs[3] = concrete_mix(regs[2], regs[3], 14)
 	for i in xrange(len(regs)):
 		regs[i] += key[i]
 		regs[i] %= modulus
