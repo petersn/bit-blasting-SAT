@@ -10,7 +10,7 @@ The file `solver.py` contains a simple DPLL implementation in Python2.
 ## Bit-Blasting for Cryptanalysis
 
 Bit-blasting refers to decomposing arithmetic operations into SAT instances.
-The file `bit_blasting.py` implements an interface for bit-blasting various arithmetic operations on fixed-width integers into SAT instances, suitable for passing into `solver.py`.
+The file `bit_blast.py` implements an interface for bit-blasting various arithmetic operations on fixed-width integers into SAT instances, suitable for passing into `solver.py`.
 
 We use this to do some very basic cryptanalysis on a toy "block cipher" based on the design of Threefish, which I'll be calling Toyfish here.
 Diagrammed below:
