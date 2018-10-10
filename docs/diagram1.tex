@@ -82,6 +82,9 @@
 	\node[xor] at (\XD, \Y-4*\dY) (op2C) {};
 	\node[dot] at (\XC, \Y-4*\dY) (op2Cdot) {};
 
+	\draw[thick,dashed] ($(op1A.north west)+(-0.15,0.15)$) rectangle ($(op2C.south east)+(0.35,-0.85)$);
+	\node[rotate=90] at (\XD+0.75, \Y-3.5*\dY) (rectlabel) {One Round};
+
 	% Mix 3
 	\node[oplus] at (\XA, \Y-6*\dY) (op3A) {};
 	\node[dot] at (\XB, \Y-6*\dY) (op3Adot) {};

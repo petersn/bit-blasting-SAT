@@ -13,13 +13,13 @@ Bit-blasting refers to decomposing arithmetic operations into SAT instances.
 The file `bit_blast.py` implements an interface for bit-blasting various arithmetic operations on fixed-width integers into SAT instances, suitable for passing into `solver.py`.
 
 We use this to do some very basic cryptanalysis on a toy "block cipher" based on the design of Threefish, which I'll be calling Toyfish here.
-Diagrammed below:
+Diagrammed below is Toyfish, with two rounds:
 
 ![Toyfish](/docs/diagram1.png?raw=true "Toyfish block cipher")
 
 Here each line carries 16 bits, yielding a 64-bit block cipher with a 64-bit key.
-One round of this cipher consists of applying a Threefish-style mix operation on the left two words and right two words, then permuting the words.
-(The permutation after the last pass of mix operations is suppressed, because it clearly adds no security.)
+One round of this cipher consists of applying the Threefish mix operation on the left two words and right two words, then permuting all four words.
+(The permutation at the end of the last round is omitted, because it clearly adds no security.)
 Finally, the block is whitened with the key by XOR at the beginning and by addition at the end of the cipher.
 The innards of this cipher obviously don't provide anything even remotely resembling enough diffusion at just two rounds, as depicted above.
 It's really a disgustingly terrible design, and is probably utterly insecure even if the number of rounds (two) weren't a complete joke, but it'll suffice as a test case for our SAT solver.
