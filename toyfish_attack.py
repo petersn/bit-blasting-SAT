@@ -66,7 +66,7 @@ if __name__ == "__main__":
 	for var, value in zip(registers, plaintext_values):
 		bit_blast.integer_constant_constraint(builder, var, value)
 
-	# Implement two rounds of mini-Threefish-128.
+	# Implement two rounds of Toyfish-64.
 	# This is a fictious "block cipher" based on Threefish designed to be a test problem.
 	add_key(bit_blast.Xor)
 	apply_mix(0, 7)

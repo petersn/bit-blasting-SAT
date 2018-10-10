@@ -49,9 +49,9 @@ It's really a disgustingly terrible design, and is probably utterly insecure eve
 
 Now, at two rounds, one can trivially break Toyfish, but we'll break it automatically using our SAT solver.
 We will perform a known-plaintext attack where we solve for every key that is consistent with our known plaintext/ciphertext pair.
-This is implemented in `toyfish_invert.py`.
+This is implemented in `toyfish_attack.py`.
 
-Specifically, `toyfish_invert.py` picks a random 64-bit key, generates a random plaintext/ciphertext pair under this key, then uses `bit_blast.py` to build a bit-blasted implementation of Toyfish as a SAT instance, and equates the inputs and outputs to the known plaintext/ciphertext pair.
+Specifically, `toyfish_attack.py` picks a random 64-bit key, generates a random plaintext/ciphertext pair under this key, then uses `bit_blast.py` to build a bit-blasted implementation of Toyfish as a SAT instance, and equates the inputs and outputs to the known plaintext/ciphertext pair.
 The SAT instance contains 898 variables (mostly defining internal wires of full adders in the various bit-blasted additions) with 2818 clauses.
 Then it runs `solver.py` on the SAT instance to enumerate every possible 64-bit key that is consistent with the known pair.
 
